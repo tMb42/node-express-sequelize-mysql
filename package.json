@@ -10,11 +10,11 @@
     "pod": "NODE_ENV=production nodemon index.js",
     "dev-seed": "NODE_ENV=development npx sequelize-cli db:seed --seed",
     "test-seed": "NODE_ENV=test npx sequelize-cli db:seed --seed",
-    "pod-seed": "NODE_ENV=production npx sequelize-cli db:seed --seed" ,
-    "test-migrate": "NODE_ENV=test npx sequelize-cli db:migrate",  
-    "dev-migrate-and-seed-all": "NODE_ENV=development npx sequelize-cli db:migrate && NODE_ENV=development npx sequelize-cli db:seed:all",  
-    "test-migrate-and-seed-all": "NODE_ENV=test npx sequelize-cli db:migrate && NODE_ENV=test npx sequelize-cli db:seed:all",   
-    "pod-migrate-and-seed-all": "NODE_ENV=production npx sequelize-cli db:migrate && NODE_ENV=production npx sequelize-cli db:seed:all"   
+    "pod-seed": "NODE_ENV=production npx sequelize-cli db:seed --seed",
+    "test-migrate": "NODE_ENV=test npx sequelize-cli db:migrate",
+    "dev-migrate-and-seed-all": "NODE_ENV=development npx sequelize-cli db:migrate && NODE_ENV=development npx sequelize-cli db:seed:all",
+    "test-migrate-and-seed-all": "NODE_ENV=test npx sequelize-cli db:migrate && NODE_ENV=test npx sequelize-cli db:seed:all",
+    "pod-migrate-and-seed-all": "NODE_ENV=production npx sequelize-cli db:migrate && NODE_ENV=production npx sequelize-cli db:seed:all"
   },
   "repository": {
     "type": "git",
@@ -36,6 +36,7 @@
     "sequelize": "^6.37.3"
   },
   "devDependencies": {
+    "colors": "^1.4.0",
     "nodemon": "^3.1.0"
   }
 }

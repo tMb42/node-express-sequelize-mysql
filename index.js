@@ -1,5 +1,5 @@
 require('dotenv').config();
-
+require('colors');
 const express = require('express');
 const bodyParser = require('body-parser');
 const { sequelize } = require('./models/index.js');
@@ -22,10 +22,10 @@ app.use(jsonWebToken);
 
 sequelize.sync({force: false, match: syncMatchPattern})  // use { force: true } for delete all table then create Or use { alter: true } to avoid dropping tables
 .then(() => {
-  console.log('Yes Re-Sync Database & tables created!');
+  console.log('Yes Re-Sync Database & tables created!'.bgGreen.black.italic.bold);
 })
 .catch(err => {
-  console.error('Unable to sync database:', err);
+  console.error('error connecting: ' + err.stack.bgRed.white); 
 });
 
 app.get('/', (req, res) => {
@@ -37,5 +37,5 @@ const port = process.env.APP_SERVER_PORT || 3000;
 
 //Listen
 app.listen(port, () => {
-  console.log(`Express Server Running on port ${port} for NodeJs-Express-Sequelize-MySQL-API @tMb`)
+  console.log(`Express Server Running on port ${port} for NodeJs-Express-Sequelize-MySQL-API @tMb`.rainbow.italic.bgWhite.bold) // rainbow color
 });

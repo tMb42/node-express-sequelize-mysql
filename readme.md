@@ -38,7 +38,7 @@ $ npm install dotenv --save
 
 $ npm install cors
 
-<!-- get color and style in your node.js console -->
+<!-- Add color and style in your node.js console -->
 $ npm i --save-dev colors
 
 % HTTP request logger middleware for node.js
