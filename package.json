@@ -1,0 +1,41 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "It's a Node-Express-Sequelize-MySQL-JWT",
+  "main": "index.js",
+  "scripts": {
+    "start": "SET NODE_ENV=staging && nodemon index.js",
+    "dev": "NODE_ENV=development nodemon index.js",
+    "test": "NODE_ENV=test nodemon index.js",
+    "pod": "NODE_ENV=production nodemon index.js",
+    "dev-seed": "NODE_ENV=development npx sequelize-cli db:seed --seed",
+    "test-seed": "NODE_ENV=test npx sequelize-cli db:seed --seed",
+    "pod-seed": "NODE_ENV=production npx sequelize-cli db:seed --seed" ,
+    "test-migrate": "NODE_ENV=test npx sequelize-cli db:migrate",  
+    "dev-migrate-and-seed-all": "NODE_ENV=development npx sequelize-cli db:migrate && NODE_ENV=development npx sequelize-cli db:seed:all",  
+    "test-migrate-and-seed-all": "NODE_ENV=test npx sequelize-cli db:migrate && NODE_ENV=test npx sequelize-cli db:seed:all",   
+    "pod-migrate-and-seed-all": "NODE_ENV=production npx sequelize-cli db:migrate && NODE_ENV=production npx sequelize-cli db:seed:all"   
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tMb42/node-express-sequelize-mysql.git"
+  },
+  "author": "Er. Biplab Kumar Karan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tMb42/node-express-sequelize-mysql/issues"
+  },
+  "homepage": "https://github.com/tMb42/node-express-sequelize-mysql#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.9.7",
+    "sequelize": "^6.37.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
