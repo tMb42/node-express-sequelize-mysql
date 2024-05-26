@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
         through: 'user_role',
         foreignKey: 'user_id',
         otherKey: 'role_id',  
-        constraints: false,
+        constraints: true,
         timestamps: false, 
         scope: { 
           roleableType: 'User' 

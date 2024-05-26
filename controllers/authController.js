@@ -1,10 +1,11 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { User } = require('../models');
+require('dotenv').config();
 const UserResource = require('../resources/UserResource');
 
 
-exports.register = async (req, res) => {
+exports.signUp = async (req, res) => {
   try {  
     console.log("body",req.body);
     const {name, email, password, password_confirmation} = req.body;    
@@ -35,7 +36,7 @@ exports.register = async (req, res) => {
               success: 1,
               message: "Registered Successfully",
               users: new UserResource(User).toJSON(),
-              users: data.dataValues
+              user: data.dataValues
             }); 
           }).catch(err => {
             res.status(500).json({
@@ -62,7 +63,7 @@ exports.register = async (req, res) => {
     
 }
 
-exports.login = async (req, res) => {
+exports.signIn = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ where: { email } });
@@ -72,8 +73,20 @@ exports.login = async (req, res) => {
     }
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
-    res.status(201).send({ user: new UserResource(user).toJSON(), token });
+    res.status(201).send({ 
+      userData: new UserResource(user).toJSON(), 
+      token });
   } catch (error) {
     res.status(400).send(error);
   }
 };
+
+exports.signOut = async(req, res) => {
+  try {
+    const token = req.headers['authorization'].split(' ')[1];
+   
+    res.status(200).send({ message: 'Logout successful'});
+  } catch (error) {
+    res.status(500).send({ error: error });
+  }
+}

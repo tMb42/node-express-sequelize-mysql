@@ -7,15 +7,22 @@ const config = require('./config/config.js');
 const syncMatchPattern = new RegExp(config.syncMatchPattern);
 const routerIndex = require('./routes/index.js');
 const jsonWebToken = require('./middleware/VerifyJwtToken');
+const cors =require('cors');
 
 const app = express();
 
 
-app.use(bodyParser.json());
-// app.use('/api', authRoutes);
+// app.use(bodyParser.json());
+app.use(express.json());
+
+//Fix cors error
+app.use(cors({
+  origin: "http://localhost:4200"     
+  })
+);
 
 //Routes  
-app.use('/api', routerIndex);
+app.use('/api', routerIndex); // use the consolidated router
 
 // Middleware
 app.use(jsonWebToken);
