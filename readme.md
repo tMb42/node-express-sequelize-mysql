@@ -104,3 +104,7 @@ $ npm i utils
 
 % Parse, validate, manipulate, and display dates and times in JavaScript.
 $ npm install moment --save 
+
+
+<!-- Nodemailer is a module for Node.js applications to allow easy as cake email sending. -->
+$ npm install nodemailer

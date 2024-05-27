@@ -8,9 +8,12 @@ const syncMatchPattern = new RegExp(config.syncMatchPattern);
 const routerIndex = require('./routes/index.js');
 const jsonWebToken = require('./middleware/VerifyJwtToken');
 const cors =require('cors');
+const path = require('path');
 
 const app = express();
 
+// Serve static files from the "assets" directory
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 // app.use(bodyParser.json());
 app.use(express.json());
