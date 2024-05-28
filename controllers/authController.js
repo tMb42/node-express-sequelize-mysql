@@ -63,16 +63,53 @@ exports.signUp = async (req, res) => {
 exports.signIn = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ where: { email } });
 
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(400).send({ error: 'Invalid login credentials.' });
+    if (!email || !password) {
+      return res.status(400).json({
+        success: 0,
+        message: "Please Provide your registered Email-Id and password!"
+      })
     }
 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
-    res.status(201).send({ 
-      userData: new UserResource(user).toJSON(), 
-      token });
+    await User.findOne({ 
+      where: { email } 
+    }).then(async isAvailable =>{ 
+      if(!isAvailable){
+        return res.status(400).send({
+          success: 0,
+          message: 'The provided registered email is incorrect!'
+        });
+         
+      }else{
+        if(!isAvailable.email_verified_at){
+          res.status(401).json({
+            success: false,
+            message: 'Your E-mail verification is not Completed!'
+          })
+
+        }else{
+          
+          if(!await bcrypt.compare(password, isAvailable.password)){
+            return res.status(400).send({
+              success: 0,
+              message: 'The provided password credentials is incorrect!'
+            });
+
+          }else{
+            const jwtGenerate = jwt.sign({id: isAvailable.id, emailId: isAvailable.email}, process.env.JWT_SECRET, {
+              expiresIn: process.env.JWT_EXPIRES_IN
+            });
+            return res.status(200).json({
+              success: 1,
+              message: "login successfully",
+              userData: new UserResource(isAvailable).toJSON(),
+              token: jwtGenerate
+            });
+          }
+        }
+      }
+    })
+
   } catch (error) {
     res.status(400).send(error);
   }
