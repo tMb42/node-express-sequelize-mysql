@@ -3,7 +3,7 @@
 const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class Role extends Model {
+  class Designation extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,30 +11,37 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.belongsToMany(models.User,{ 
-        through: 'user_role',
-        foreignKey: 'role_id',
-        otherKey: 'user_id',
-        constraints: true,     //To add foreign_key
-        // timestamps: true, //user_role table generated without default timetamp
-      });
     }
   }
-  Role.init({
+  Designation.init({
     id: {
       type: DataTypes.BIGINT.UNSIGNED,
       primaryKey: true,
       autoIncrement: true
     },
-    name: {        
-      type: DataTypes.STRING(50),
+    designation_name: {        
+      type: DataTypes.STRING(100),
       unique: true,
       allowNull: false
     },
-    label: {        
-      type: DataTypes.STRING(50),
+    designation_alias: {        
+      type: DataTypes.STRING(20),
       allowNull: true
     },  
+    remarks: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    display: {
+      type: DataTypes.TINYINT,
+      allowNull: false,
+      defaultValue: 1
+    },
+    inforce: {
+      type: DataTypes.TINYINT,
+      allowNull: false,
+      defaultValue: 1
+    },
     created_at: {        
       type: 'TIMESTAMP',
       defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
@@ -48,10 +55,10 @@ module.exports = (sequelize, DataTypes) => {
   }, 
   {
     sequelize,
-    modelName: 'Role',
-    tableName: 'roles', // Explicitly set the table name if needed
+    modelName: 'Designation',
+    tableName: 'designations', // Explicitly set the table name if needed
     timestamps:false,
     underscored:true, // Auto genetared timestamp (user_role table ) will be changed to created_at & updated_at by default createdAt & updatedAt.  
   });
-  return Role;
+  return Designation;
 };

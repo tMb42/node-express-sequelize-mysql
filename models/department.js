@@ -3,7 +3,7 @@
 const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class Role extends Model {
+  class Department extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,30 +11,41 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.belongsToMany(models.User,{ 
-        through: 'user_role',
-        foreignKey: 'role_id',
-        otherKey: 'user_id',
-        constraints: true,     //To add foreign_key
-        // timestamps: true, //user_role table generated without default timetamp
-      });
     }
   }
-  Role.init({
+  Department.init({
     id: {
       type: DataTypes.BIGINT.UNSIGNED,
       primaryKey: true,
       autoIncrement: true
     },
-    name: {        
-      type: DataTypes.STRING(50),
+    department_name: {        
+      type: DataTypes.STRING(100),
       unique: true,
       allowNull: false
     },
-    label: {        
+    department_short_name: {        
       type: DataTypes.STRING(50),
       allowNull: true
     },  
+    alias_name: {        
+      type: DataTypes.STRING(20),
+      allowNull: true
+    },  
+    remarks: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    display: {
+      type: DataTypes.TINYINT(4),
+      allowNull: false,
+      defaultValue: 1
+    },
+    inforce: {
+      type: DataTypes.TINYINT(4),
+      allowNull: false,
+      defaultValue: 1
+    },
     created_at: {        
       type: 'TIMESTAMP',
       defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
@@ -48,10 +59,10 @@ module.exports = (sequelize, DataTypes) => {
   }, 
   {
     sequelize,
-    modelName: 'Role',
-    tableName: 'roles', // Explicitly set the table name if needed
+    modelName: 'Department',
+    tableName: 'departments', // Explicitly set the table name if needed
     timestamps:false,
     underscored:true, // Auto genetared timestamp (user_role table ) will be changed to created_at & updated_at by default createdAt & updatedAt.  
   });
-  return Role;
+  return Department;
 };

@@ -1,7 +1,6 @@
 require('dotenv').config();
 require('colors');
 const express = require('express');
-const bodyParser = require('body-parser');
 const { sequelize } = require('./models/index.js');
 const config = require('./config/config.js');
 const syncMatchPattern = new RegExp(config.syncMatchPattern);

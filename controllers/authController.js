@@ -1,7 +1,16 @@
+require('dotenv').config();
+
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { User } = require('../models');
-require('dotenv').config();
+const { 
+  User, 
+  UserProfile, 
+  Role,
+  Ability,
+  Department,
+  Designation
+} = require('../models');
+
 const UserResource = require('../resources/UserResource');
 const { sendEmailVerificationNotification } = require('../services/EmailVerificationService');
 
@@ -31,9 +40,22 @@ exports.signUp = async (req, res) => {
             password: bcrypt.hashSync(req.body.password,10) //rounds = 15: ~3 sec/hash. The module will use the value you enter and go through 2^rounds hashing iterations.
           };
           await User.create(registeredData).then(async data => {
+            await UserProfile.create({
+              user_id: data.dataValues.id,
+              department_id: 1,
+              designation_id: 1,
+              gender: " ",
+            });
+
+            const role = await Role.findOne({ where: { label: 'Visitor' } });
+            const ability = await Ability.findOne({ where: { label: 'Profile Registration' } });
+        
+            await data.addRole(role);
+            await data.addAbility(ability);
+
             //Send Email for verification!
             await sendEmailVerificationNotification(data.dataValues, res);
-
+            
           }).catch(err => {
             res.status(500).json({
               success: 0,
@@ -111,6 +133,7 @@ exports.signIn = async (req, res) => {
     })
 
   } catch (error) {
+    console.log(error)
     res.status(400).send(error);
   }
 };
@@ -158,4 +181,41 @@ exports.verifyEmail = async (req, res) => {
       error: 'Invalid or expired token' 
     });
   }
+};
+
+exports.getAuthUserDetails = async (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({ 
+      success: 0,
+      message: "Unauthorized - No user information available"
+    });
+  }
+
+  // const user = await User.findByPk(req.user.id);
+  const user = await User.findByPk(req.user.id, {
+    include: [
+      {
+        model: Role,
+      },
+      {
+        model: Ability,
+      },
+      {
+        model: UserProfile,
+        include:[
+          {
+            model: Department // Include the Department model
+          },
+          {
+            model: Designation,
+          },
+        ]
+      }
+    ],    
+  });
+
+  res.json({
+    success: 1,
+    data: new UserResource(user) // Format user details using UserResource
+  });
 };

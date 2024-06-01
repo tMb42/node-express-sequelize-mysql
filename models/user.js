@@ -15,10 +15,18 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'user_id',
         otherKey: 'role_id',  
         constraints: true,
-        timestamps: false, 
-        scope: { 
-          roleableType: 'User' 
-        } 
+        timestamps: false
+      });
+      this.belongsToMany(models.Ability, { 
+        through: 'user_ability',
+        foreignKey: 'user_id',
+        otherKey: 'ability_id',  
+        constraints: true,
+        timestamps: false
+      });
+      // A user has one profile
+      this.hasOne(models.UserProfile, {
+        foreignKey: 'user_id',
       });
     }
   }

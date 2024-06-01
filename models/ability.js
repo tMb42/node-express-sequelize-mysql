@@ -3,7 +3,7 @@
 const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class Role extends Model {
+  class Ability extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -12,15 +12,15 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.belongsToMany(models.User,{ 
-        through: 'user_role',
-        foreignKey: 'role_id',
+        through: 'user_ability',
+        foreignKey: 'ability_id',
         otherKey: 'user_id',
         constraints: true,     //To add foreign_key
-        // timestamps: true, //user_role table generated without default timetamp
+        // timestamps: true, //user_ability table generated without default timetamp
       });
     }
   }
-  Role.init({
+  Ability.init({
     id: {
       type: DataTypes.BIGINT.UNSIGNED,
       primaryKey: true,
@@ -48,10 +48,10 @@ module.exports = (sequelize, DataTypes) => {
   }, 
   {
     sequelize,
-    modelName: 'Role',
-    tableName: 'roles', // Explicitly set the table name if needed
+    modelName: 'Ability',
+    tableName: 'abilities', // Explicitly set the table name if needed
     timestamps:false,
     underscored:true, // Auto genetared timestamp (user_role table ) will be changed to created_at & updated_at by default createdAt & updatedAt.  
   });
-  return Role;
+  return Ability;
 };
