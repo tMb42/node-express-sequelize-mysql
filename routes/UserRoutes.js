@@ -8,6 +8,4 @@ router.route('/users').get(userClr.getAllUsers);
 
 
 
-
-
 module.exports = router;

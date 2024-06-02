@@ -3,7 +3,8 @@ require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { 
-  User, 
+  User,
+  Profile, 
   UserProfile, 
   Role,
   Ability,
@@ -39,12 +40,15 @@ exports.signUp = async (req, res) => {
             email: req.body.email, 
             password: bcrypt.hashSync(req.body.password,10) //rounds = 15: ~3 sec/hash. The module will use the value you enter and go through 2^rounds hashing iterations.
           };
-          await User.create(registeredData).then(async data => {
+          await User.create(registeredData).then(async data => {            
             await UserProfile.create({
               user_id: data.dataValues.id,
               department_id: 1,
               designation_id: 1,
               gender: " ",
+            });
+            await Profile.create({
+              user_id: data.dataValues.id
             });
 
             const role = await Role.findOne({ where: { label: 'Visitor' } });
@@ -190,7 +194,6 @@ exports.getAuthUserDetails = async (req, res) => {
       message: "Unauthorized - No user information available"
     });
   }
-
   // const user = await User.findByPk(req.user.id);
   const user = await User.findByPk(req.user.id, {
     include: [
@@ -210,12 +213,16 @@ exports.getAuthUserDetails = async (req, res) => {
             model: Designation,
           },
         ]
+      },
+      {
+        model: Profile
       }
     ],    
   });
-
+  
   res.json({
     success: 1,
     data: new UserResource(user) // Format user details using UserResource
+    
   });
 };

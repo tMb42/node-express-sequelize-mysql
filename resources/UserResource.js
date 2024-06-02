@@ -11,6 +11,7 @@ class UserResource {
       email_verified_at,
       created_at,
       updated_at,
+      Profile
     } = this.user;
 
     const roleDetails = this.user.Roles ? this.user.Roles.map(x => ({
@@ -38,14 +39,17 @@ class UserResource {
       inforce,
       remarks,
       Department,  // Extract the entire Department object
-      Designation
+      Designation     
     } = UserProfile;
   
     const department_short_name = Department ? Department.department_short_name : undefined;
     const department_name = Department ? Department.department_name : undefined;
     const deprt_alias_name = Department ? Department.alias_name : undefined;
+   
     const designation_name = Designation ? Designation.designation_name : '';
     const designation_alias = Designation ? Designation.designation_alias : '';
+    
+    const photo = Profile ? Profile.photoUrl : '';
     
     return {
       id,
@@ -73,6 +77,7 @@ class UserResource {
       deprt_alias_name,
       designation_name,
       designation_alias,
+      photo
     };
   }
 }

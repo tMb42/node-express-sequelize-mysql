@@ -20,10 +20,14 @@ if (config.use_env_variable) {
   }
   sequelize = new Sequelize(dbUrl, config);
 } else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config,
+  sequelize = new Sequelize(
+    config.database, 
+    config.username, 
+    config.password,
+    config,
     {
     // disable logging or provide a custom logging function; default: console.log
-    logging: true,
+    logging: false,
     // Specify options, which are used when sequelize.define is called.
     // The following example:
     //   define: { timestamps: false }

@@ -19,7 +19,7 @@ app.use(express.json());
 
 //Fix cors error
 app.use(cors({
-  origin: "http://localhost:4200"     
+  origin: process.env.FRONT_APP     
   })
 );
 

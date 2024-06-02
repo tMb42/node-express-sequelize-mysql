@@ -24,9 +24,15 @@ module.exports = (sequelize, DataTypes) => {
         constraints: true,
         timestamps: false
       });
-      // A user has one profile
+      // A user has one user_profile
       this.hasOne(models.UserProfile, {
         foreignKey: 'user_id',
+      });
+
+      // A user has one profile
+      this.hasOne(models.Profile, { 
+        foreignKey: 'user_id',
+        constraints: true,
       });
     }
   }
@@ -93,6 +99,7 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'users', // Explicitly set the table name if needed. By default, Sequelize uses the pluralized form of the model name for table names
     timestamps: false,
     underscored:true, // Auto genetared timestamp (user_role table ) will be changed to created_at & updated_at by default createdAt & updatedAt.  
+    
   });
   return User;
 };
