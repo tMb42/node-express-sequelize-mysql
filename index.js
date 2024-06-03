@@ -2,19 +2,18 @@ require('dotenv').config();
 require('colors');
 const express = require('express');
 const { sequelize } = require('./models/index.js');
-const config = require('./config/config.js');
+const config = require('./database/config.js');
 const syncMatchPattern = new RegExp(config.syncMatchPattern);
 const routerIndex = require('./routes/index.js');
-const jsonWebToken = require('./middleware/VerifyJwtToken');
 const cors =require('cors');
 const path = require('path');
 
 const app = express();
 
-// Serve static files from the "assets" directory
+/// Serve static files from the "assets" directory
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
-// app.use(bodyParser.json());
+
 app.use(express.json());
 
 //Fix cors error
@@ -26,8 +25,6 @@ app.use(cors({
 //Routes  
 app.use('/api', routerIndex); // use the consolidated router
 
-// Middleware
-app.use(jsonWebToken);
 
 sequelize.sync({force: false, match: syncMatchPattern})  // use { force: true } for delete all table then create Or use { alter: true } to avoid dropping tables
 .then(() => {

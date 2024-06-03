@@ -87,16 +87,16 @@ exports.signUp = async (req, res) => {
 }
 
 exports.signIn = async (req, res) => {
+  console.log('dsgsdga req',req);
   try {
     const { email, password } = req.body;
-
     if (!email || !password) {
       return res.status(400).json({
         success: 0,
         message: "Please Provide your registered Email-Id and password!"
       })
     }
-
+ 
     await User.findOne({ 
       where: { email } 
     }).then(async isAvailable =>{ 
