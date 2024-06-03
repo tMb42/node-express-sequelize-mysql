@@ -37,6 +37,8 @@ if (config.use_env_variable) {
 // Debug: Verify sequelize instance creation
 console.log("Sequelize instance created:", sequelize);
 
+const matchPattern = config.syncMatchPattern || '.*'; // Default to match all models if not specified
+
 fs
   .readdirSync(__dirname)
   .filter(file => {
@@ -44,7 +46,8 @@ fs
       file.indexOf('.') !== 0 &&
       file !== basename &&
       file.slice(-3) === '.js' &&
-      file.indexOf('.test.js') === -1
+      file.indexOf('.test.js') === -1 &&
+      new RegExp(matchPattern).test(file) // Filter models based on the match pattern
     );
   })
   .forEach(file => {

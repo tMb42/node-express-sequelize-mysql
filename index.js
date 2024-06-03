@@ -26,11 +26,13 @@ app.use(cors({
 app.use('/api', routerIndex); // use the consolidated router
 
 
-sequelize.sync({force: false, match: syncMatchPattern})  // use { force: true } for delete all table then create Or use { alter: true } to avoid dropping tables
-.then(() => {
+sequelize.sync({
+  force: config.forceSync || false, // Default to false if not specified
+  alter: config.alterSync || false, // Default to false if not specified
+  match: new RegExp(config.syncMatchPattern || '.*') // Default to match all models if not specified
+}).then(() => {
   console.log('Yes Re-Sync Database & tables created!'.bgGreen.black.italic.bold);
-})
-.catch(err => {
+}).catch(err => {
   console.error('error connecting: ' + err.stack.bgRed.white); 
 });
 

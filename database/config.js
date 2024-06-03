@@ -35,7 +35,7 @@ module.exports = {
     host: process.env.DB_HOST_DEV,
     port: process.env.DB_PORT_DEV,
     dialect: process.env.DB_CONNECTION_DEV,
-    syncMatchPattern: '.*',
+    syncMatchPattern: '.*',                 // Match all models in test environment
     define: {
       underscored: true,
       freezeTableName: false,
@@ -46,6 +46,10 @@ module.exports = {
       timestamps: false
     },
     timezone: '+05:30',
+
+    forceSync: false,
+    alterSync: false,
+
     pool: {
       max: 5,
       idle: 30000,
@@ -62,7 +66,7 @@ module.exports = {
     host: process.env.DB_HOST_TEST,
     port: process.env.DB_PORT_TEST,
     dialect: process.env.DB_CONNECTION_TEST,
-    syncMatchPattern: '.*',
+    syncMatchPattern: '.*',                 // Match all models in test environment
 
     define: {
       underscored: true,
@@ -74,6 +78,10 @@ module.exports = {
       timestamps: false
     },
     timezone: '+05:30',
+
+    forceSync: true,
+    alterSync: false,
+
     pool: {
       max: 5,
       idle: 30000,
@@ -90,7 +98,7 @@ module.exports = {
     host: process.env.DB_HOST_PROD,
     port: process.env.DB_PORT_PROD,
     dialect: process.env.DB_CONNECTION_PROD,
-    syncMatchPattern: '.*',
+    syncMatchPattern: '.*',                   // Example: Match specific models in production
 
     define: {
       underscored: true,
@@ -102,6 +110,9 @@ module.exports = {
       timestamps: false
     },
     timezone: '+05:30',
+
+    forceSync: false,
+    alterSync: true,
     pool: {
       max: 5,
       idle: 30000,
