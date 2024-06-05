@@ -1,34 +1,7 @@
-require('dotenv').config({
-  path: process.env.NODE_ENV === 'development' ? '.env.development' : 
-        process.env.NODE_ENV === 'test' ? '.env.test' : 
-        '.env.production'
-});
-
-const getDatabaseUrl = () => {
-  if (process.env.NODE_ENV === 'development') {
-    return `${process.env.DB_CONNECTION_DEV}://` +
-           `${process.env.DB_USERNAME_DEV}:${process.env.DB_PASSWORD_DEV}` +
-           `@${process.env.DB_HOST_DEV}:${process.env.DB_PORT_DEV}` +
-           `/${process.env.DB_DATABASE_DEV}`;
-  }
-  if (process.env.NODE_ENV === 'test') {
-    return `${process.env.DB_CONNECTION_TEST}://` +
-           `${process.env.DB_USERNAME_TEST}:${process.env.DB_PASSWORD_TEST}` +
-           `@${process.env.DB_HOST_TEST}:${process.env.DB_PORT_TEST}` +
-           `/${process.env.DB_DATABASE_TEST}`;
-  }
-  if (process.env.NODE_ENV === 'production') {
-    return `${process.env.DB_CONNECTION_PROD}://` +
-          `${process.env.DB_USERNAME_PROD}:${process.env.DB_PASSWORD_PROD}` +
-          `@${process.env.DB_HOST_PROD}:${process.env.DB_PORT_PROD}` +
-          `/${process.env.DB_DATABASE_PROD}`;
-  }
-  return process.env.DATABASE_URL;
-};
+require('dotenv').config(); // Load existing environment variables
 
 module.exports = {
   development: {
-    use_env_variable: getDatabaseUrl(),
     username: process.env.DB_USERNAME_DEV,
     password: process.env.DB_PASSWORD_DEV,
     database: process.env.DB_DATABASE_DEV,
@@ -59,7 +32,6 @@ module.exports = {
   },
 
   test: {
-    use_env_variable: getDatabaseUrl(),
     username: process.env.DB_USERNAME_TEST,
     password: process.env.DB_PASSWORD_TEST,
     database: process.env.DB_DATABASE_TEST,
@@ -87,11 +59,10 @@ module.exports = {
       idle: 30000,
       acquire: 60000,
     },
-    logging: true  // Disable logging for tests
+    logging: false  // Disable logging for tests
   },
 
   production: {
-    use_env_variable: getDatabaseUrl(),
     username: process.env.DB_USERNAME_PROD,
     password: process.env.DB_PASSWORD_PROD,
     database: process.env.DB_DATABASE_PROD,

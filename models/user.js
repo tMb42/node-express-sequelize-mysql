@@ -34,6 +34,8 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'user_id',
         constraints: true,
       });
+
+      this.hasMany(models.PersonalAccessToken, { foreignKey: 'tokenable_id', constraints: false, scope: { tokenable_type: 'User' } });
     }
   }
 

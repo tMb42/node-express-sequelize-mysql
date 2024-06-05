@@ -12,6 +12,7 @@
     "test-seed": "NODE_ENV=test npx sequelize-cli db:seed --seed",
     "pod-seed": "NODE_ENV=production npx sequelize-cli db:seed --seed",
     "test-migrate": "NODE_ENV=test npx sequelize-cli db:migrate",
+    "pod-migrate": "NODE_ENV=production npx sequelize-cli db:migrate",
     "dev-migrate-and-seed-all": "NODE_ENV=development npx sequelize-cli db:migrate && NODE_ENV=development npx sequelize-cli db:seed:all",
     "test-migrate-and-seed-all": "NODE_ENV=test npx sequelize-cli db:migrate && NODE_ENV=test npx sequelize-cli db:seed:all",
     "pod-migrate-and-seed-all": "NODE_ENV=production npx sequelize-cli db:migrate && NODE_ENV=production npx sequelize-cli db:seed:all"

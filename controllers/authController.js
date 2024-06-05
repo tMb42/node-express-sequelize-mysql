@@ -13,7 +13,8 @@ const {
 } = require('../models');
 
 const UserResource = require('../resources/UserResource');
-const { sendEmailVerificationNotification } = require('../services/EmailVerificationService');
+const { sendEmailVerificationNotification } = require('../services/emailVerificationService');
+const { generatePersonalAccessToken } = require('../services/PersonalAccessTokenService');
 
 exports.signUp = async (req, res) => {
   try { 
@@ -87,9 +88,8 @@ exports.signUp = async (req, res) => {
 }
 
 exports.signIn = async (req, res) => {
-  console.log('dsgsdga req',req);
   try {
-    const { email, password } = req.body;
+    const { email, password, device_name } = req.body;
     if (!email || !password) {
       return res.status(400).json({
         success: 0,
@@ -114,20 +114,26 @@ exports.signIn = async (req, res) => {
           })
 
         }else{
-          
-          if(!await bcrypt.compare(password, isAvailable.password)){
+          const isPasswordValid = await bcrypt.compare(password, isAvailable.password);
+          if(!isPasswordValid){
             return res.status(400).send({
               success: 0,
               message: 'The provided password credentials is incorrect!'
             });
 
           }else{
+
+            // Generate JWT token
             const jwtGenerate = jwt.sign({id: isAvailable.id, emailId: isAvailable.email}, process.env.JWT_SECRET, {
               expiresIn: process.env.JWT_EXPIRES_IN
             });
-            return res.status(200).json({
+
+            // Generate Personal Access Token
+            await generatePersonalAccessToken(isAvailable, device_name, 7);
+
+            return res.status(201).json({
               success: 1,
-              message: "login successfully",
+              message: "You are logged in successfully!",
               userData: new UserResource(isAvailable).toJSON(),
               token: jwtGenerate
             });
@@ -137,20 +143,34 @@ exports.signIn = async (req, res) => {
     })
 
   } catch (error) {
-    console.log(error)
     res.status(400).send(error);
   }
 };
 
-exports.signOut = async(req, res) => {
+exports.signOut = async (req, res) => {
   try {
-    const token = req.headers['authorization'].split(' ')[1];
-   
-    res.status(200).send({ message: 'Logout successful'});
+    if (req.paToken) {
+      await req.paToken.destroy();
+      return res.status(201).json({
+        success: 1,
+        message: "You have logged out successfully"
+      });
+    } else {
+      return res.status(400).json({
+        success: 0,
+        message: "No active session found"
+      });
+    }
   } catch (error) {
-    res.status(500).send({ error: error });
+    console.error(error);
+    res.status(500).json({
+      success: 0,
+      message: "An error occurred. Please try again later."
+    });
   }
-}
+};
+
+
 
 exports.verifyEmail = async (req, res) => {
   const { token } = req.params;
@@ -222,7 +242,6 @@ exports.getAuthUserDetails = async (req, res) => {
   
   res.json({
     success: 1,
-    data: new UserResource(user) // Format user details using UserResource
-    
+    data: new UserResource(user) // Format user details using UserResource    
   });
 };

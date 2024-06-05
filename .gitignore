@@ -131,3 +131,6 @@ dist
 
 # for mac
 .DS_Store
+
+# assets
+assets/

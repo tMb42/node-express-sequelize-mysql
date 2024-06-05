@@ -1,38 +1,27 @@
 'use strict';
 
+require('dotenv').config();
+
 const process = require('process');
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
-const config = require('../database/config.js')[env];
+const config = require('../config/config.js')[env];
 const db = {};
 
-
 let sequelize;
-if (config.use_env_variable) {
-  const dbUrl = config.use_env_variable;
-  console.log(`Using database URL from environment variable: ${dbUrl}`);
-  if (!dbUrl) {
-    throw new Error(`Environment variable ${config.use_env_variable} is not defined`);
-  }
-  sequelize = new Sequelize(dbUrl, {
+sequelize = new Sequelize(
+  config.database, 
+  config.username, 
+  config.password, 
+  {
     ...config,
     logging: config.logging  // Use logging setting from config
-  });
-} else {
-  console.log(`Using database configuration directly from config file.`);
-  sequelize = new Sequelize(
-    config.database, 
-    config.username, 
-    config.password, 
-    {
-      ...config,
-      logging: config.logging  // Use logging setting from config
-    }
-  );
-}
+  }
+);
+
 
 // Debug: Verify sequelize instance creation
 console.log("Sequelize instance created:", sequelize);

@@ -1,6 +1,6 @@
 'use strict';
 module.exports = {
-  up: async (queryInterface, Sequelize, sequelize) => {
+  up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('user_role', {
       user_id: {
         type: Sequelize.BIGINT.UNSIGNED,
