@@ -89,7 +89,7 @@ exports.signUp = async (req, res) => {
 
 exports.signIn = async (req, res) => {
   try {
-    const { email, password, device_name } = req.body;
+    const { email, password, device_name, remember } = req.body;
     if (!email || !password) {
       return res.status(400).json({
         success: 0,
@@ -112,7 +112,6 @@ exports.signIn = async (req, res) => {
             success: false,
             message: 'Your E-mail verification is not Completed!'
           })
-
         }else{
           const isPasswordValid = await bcrypt.compare(password, isAvailable.password);
           if(!isPasswordValid){
@@ -120,22 +119,25 @@ exports.signIn = async (req, res) => {
               success: 0,
               message: 'The provided password credentials is incorrect!'
             });
-
-          }else{
-
+          }else{           
             // Generate JWT token
-            const jwtGenerate = jwt.sign({id: isAvailable.id, emailId: isAvailable.email}, process.env.JWT_SECRET, {
+            const jwtGenerate = jwt.sign({id: isAvailable.id, emailId: isAvailable.email}, process.env.JWT_EXPIRES_IN, {
               expiresIn: process.env.JWT_EXPIRES_IN
             });
-
+            // Also return the expiration time to the client
+            const expiresAt = jwt.decode(jwtGenerate).exp * 1000; // Convert to milliseconds
+          
+            const tokenExpiresInDays = remember ? process.env.JWT_EXPIRES_IN_REMEMBER_ME : process.env.JWT_EXPIRES_IN; // Example: 30 days for "remember me", 1 day for normal
+            console.log('remember',tokenExpiresInDays)     
             // Generate Personal Access Token
-            await generatePersonalAccessToken(isAvailable, device_name, 7);
+            await generatePersonalAccessToken(isAvailable, device_name, tokenExpiresInDays);
 
             return res.status(201).json({
               success: 1,
               message: "You are logged in successfully!",
               userData: new UserResource(isAvailable).toJSON(),
-              token: jwtGenerate
+              token: jwtGenerate,
+              expiresAt: expiresAt // Send this to the client
             });
           }
         }

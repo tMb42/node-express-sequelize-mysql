@@ -34,6 +34,7 @@ module.exports =  async (req, res, next) => {
             });
         }
         if (new Date() > personalAccessToken.expires_at) {
+            await personalAccessToken.destroy(); // Automatically delete the expired token
             return res.status(402).json({
                 success: 0,
                 message: "Expired Access Period!"
