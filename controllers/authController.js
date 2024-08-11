@@ -135,7 +135,7 @@ exports.signIn = async (req, res) => {
             }, 
               process.env.JWT_SECRET, 
             {
-              expiresIn: tokenExpiresInSecond
+              expiresIn: tokenExpiresInSecond + 60 //60s extra for bufferime 
             });
            
             // Also return the expiration time to the client
