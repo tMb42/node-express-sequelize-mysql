@@ -119,18 +119,33 @@ exports.signIn = async (req, res) => {
               success: 0,
               message: 'The provided password credentials is incorrect!'
             });
-          }else{           
+          }else{       
+            // Determine token expiration based on "remember me" option
+            const tokenExpiresInSecond = remember 
+            ? parseDuration(process.env.JWT_EXPIRES_IN_REMEMBER_ME)  // Convert to seconds
+            : parseDuration(process.env.JWT_EXPIRES_IN); // Convert to seconds
+
+            // Log the parsed duration
+            console.log('Parsed tokenExpiresIn in seconds:', tokenExpiresInSecond);
+
             // Generate JWT token
-            const jwtGenerate = jwt.sign({id: isAvailable.id, emailId: isAvailable.email}, process.env.JWT_EXPIRES_IN, {
-              expiresIn: process.env.JWT_EXPIRES_IN
+            const jwtGenerate = jwt.sign({
+              id: isAvailable.id, 
+              emailId: isAvailable.email
+            }, 
+              process.env.JWT_SECRET, 
+            {
+              expiresIn: tokenExpiresInSecond
             });
+           
             // Also return the expiration time to the client
             const expiresAt = jwt.decode(jwtGenerate).exp * 1000; // Convert to milliseconds
-          
-            const tokenExpiresInDays = remember ? process.env.JWT_EXPIRES_IN_REMEMBER_ME : process.env.JWT_EXPIRES_IN; // Example: 30 days for "remember me", 1 day for normal
-            console.log('remember',tokenExpiresInDays)     
+                   
+            // Log the decoded expiration timestamp
+            console.log('JWT decoded exp in ms:', expiresAt);    
+
             // Generate Personal Access Token
-            await generatePersonalAccessToken(isAvailable, device_name, tokenExpiresInDays);
+            await generatePersonalAccessToken(isAvailable, device_name, tokenExpiresInSecond);
 
             return res.status(201).json({
               success: 1,
@@ -171,8 +186,6 @@ exports.signOut = async (req, res) => {
     });
   }
 };
-
-
 
 exports.verifyEmail = async (req, res) => {
   const { token } = req.params;
@@ -246,4 +259,26 @@ exports.getAuthUserDetails = async (req, res) => {
     success: 1,
     data: new UserResource(user) // Format user details using UserResource    
   });
+};
+
+// Utility function to parse duration string (e.g., "10d", "24h") into milliseconds
+const parseDuration = (duration) => {
+  const match = duration.match(/^(\d+)([dhms])$/);
+  if (!match) throw new Error('Invalid duration format');
+  
+  const value = parseInt(match[1], 10);
+  const unit = match[2];
+  
+  switch (unit) {
+    case 'd': // days
+      return value * 24 * 60 * 60;
+    case 'h': // hours
+      return value * 60 * 60;
+    case 'm': // minutes
+      return value * 60;
+    case 's': // minutes
+      return value;
+    default:
+      throw new Error('Unsupported time unit');
+  }
 };

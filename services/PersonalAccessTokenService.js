@@ -1,14 +1,13 @@
 const crypto = require('crypto');
 const { PersonalAccessToken } = require('../models'); 
 
-const generatePersonalAccessToken = async (user, deviceName, expiresInMinutes) => {
+const generatePersonalAccessToken = async (user, deviceName, tokenExpiresInSecond) => {
   const tokenValue = crypto.randomBytes(32).toString('hex'); // Generates a 64-character string compatible with Larave-Sactum. If required 128 charecter then use 64 in place of 
   const expiresAt = new Date();
-
-  // expiresAt.setSeconds(expiresAt.getSeconds() + expiresInSeconds); // Set the expiration date to 5 Seconds from now
-  expiresAt.setMinutes(expiresAt.getMinutes() + expiresInMinutes); // Set the expiration date to 5 minutes from now
-  // expiresAt.setDate(expiresAt.getDate() + expiresInDays); // Set the expiration date
-  console.log('expiresAt',expiresAt)
+ 
+//  const expiresInSeconds = Math.floor(tokenExpiresInSecond); // Convert ms to minutes
+expiresAt.setSeconds(expiresAt.getSeconds() + tokenExpiresInSecond); // Set the expiration dates
+console.log('expiresAt2',expiresAt)
   
   // Fetch abilities for the user
   const abilities = await user.getAbilities();

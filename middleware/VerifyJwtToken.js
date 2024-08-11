@@ -4,6 +4,7 @@ const { User } = require('../models');
 module.exports = async (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
+ 
   if (!token) {
     return res.status(401).json({ 
       success: 0,
@@ -13,6 +14,7 @@ module.exports = async (req, res, next) => {
   try {
     const verified = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findByPk(verified.id);
+    console.log('verified',verified);
     if (!user) {
       return res.status(401).json({
         success: 0,

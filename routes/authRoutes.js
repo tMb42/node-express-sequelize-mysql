@@ -11,7 +11,7 @@ router.route('/register').post(authClr.signUp);
 router.route('/login').post(authClr.signIn);
 router.route('/logout').post(verifyPatToken, authClr.signOut);
 router.route('/email/verify/:userId/:token').get(authClr.verifyEmail);
-router.route('/userDetails').get(verifyToken, authClr.getAuthUserDetails);
+router.route('/userDetails').get(verifyPatToken, authClr.getAuthUserDetails);
 
 
 module.exports = router;
